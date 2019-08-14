@@ -10,12 +10,13 @@ import Html.Attributes exposing (src)
 
 
 type alias Model =
-    {}
+    { deck : List Card
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { deck = makeNewDeck }, Cmd.none )
 
 
 
@@ -37,10 +38,14 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src "%PUBLIC_URL%/img/s01.png" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
-        ]
+    div [] (model.deck |> List.map showCardImage)
+
+
+{-| トランプのカードの画像を表示します
+-}
+showCardImage : Card -> Html msg
+showCardImage card =
+    img [ src (card |> toImagePath) ] []
 
 
 
@@ -84,6 +89,7 @@ type Card
 
 {-| 新品のデッキを作ります
 -}
+makeNewDeck : List Card
 makeNewDeck =
     suits |> List.concatMap (\suit -> ranks |> List.map (Card suit))
 
