@@ -3,6 +3,8 @@ module Main exposing (..)
 import Browser
 import Html exposing (Html, div, h1, img, text)
 import Html.Attributes exposing (src)
+import Random exposing (Generator)
+import Random.List
 
 
 
@@ -16,7 +18,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { deck = makeNewDeck }, Cmd.none )
+    ( { deck = [] }, makeNewShuffledDeck )
 
 
 
@@ -24,12 +26,14 @@ init =
 
 
 type Msg
-    = NoOp
+    = InitDeck (List Card)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        InitDeck deck ->
+            ( { model | deck = deck }, Cmd.none )
 
 
 
@@ -92,6 +96,18 @@ type Card
 makeNewDeck : List Card
 makeNewDeck =
     suits |> List.concatMap (\suit -> ranks |> List.map (Card suit))
+
+
+shuffleDeck : List Card -> Generator (List Card)
+shuffleDeck deck =
+    Random.List.shuffle deck
+
+
+{-| シャッフルされた新品のデッキを作ります
+-}
+makeNewShuffledDeck : Cmd Msg
+makeNewShuffledDeck =
+    Random.generate InitDeck <| shuffleDeck makeNewDeck
 
 
 {-| Cardから画像のパスを生成します
