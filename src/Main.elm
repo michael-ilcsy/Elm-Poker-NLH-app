@@ -50,11 +50,11 @@ view model =
 type Suit
     = Spade
     | Hart
-    | Diamond
     | Club
+    | Diamond
 
 
-type Number
+type Rank
     = Two
     | Three
     | Four
@@ -70,15 +70,31 @@ type Number
     | Ace
 
 
-type alias Card =
-    { suit : Suit
-    , number : Number
-    }
+suits =
+    [ Spade, Hart, Club, Diamond ]
 
 
+ranks =
+    [ Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King ]
+
+
+type Card
+    = Card Suit Rank
+
+
+{-| 新品のデッキを作ります
+-}
+makeNewDeck =
+    suits |> List.concatMap (\suit -> ranks |> List.map (Card suit))
+
+
+{-| Cardから画像のパスを生成します
+-}
 toImagePath : Card -> String
 toImagePath card =
-    "%PUBLIC_URL%/img/" ++ (card.suit |> suitToString) ++ (card.number |> numberToString) ++ ".png"
+    case card of
+        Card suit rank ->
+            "%PUBLIC_URL%/img/" ++ (suit |> suitToString) ++ (rank |> rankToString) ++ ".png"
 
 
 suitToString : Suit -> String
@@ -97,9 +113,9 @@ suitToString suit =
             "d"
 
 
-numberToString : Number -> String
-numberToString number =
-    case number of
+rankToString : Rank -> String
+rankToString rank =
+    case rank of
         Two ->
             "02"
 
