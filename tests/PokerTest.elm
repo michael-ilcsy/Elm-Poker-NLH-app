@@ -134,6 +134,14 @@ all =
                             |> onePair
                             |> Expect.equal Nothing
                 ]
+            , describe
+                "ハイカードのテスト"
+                [ test "役がないときにHighCardが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Five Ace King Six Three
+                            |> highCard
+                            |> Expect.equal (HighCard 14 13 6 5 3)
+                ]
             ]
         ]
 

@@ -1,5 +1,6 @@
 module Poker exposing (..)
 
+import Array
 import Trump exposing (..)
 
 
@@ -329,3 +330,38 @@ onePair hand =
 
                 _ ->
                     Nothing
+
+
+{-| ハイカードのHandRankを返します
+-}
+highCard : Hand -> HandRank
+highCard hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanksArray =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map toRankNumber
+                        |> List.sort
+                        |> List.reverse
+                        |> Array.fromList
+
+                getRankNumberFromCardRanksArray int =
+                    cardRanksArray |> Array.get int |> Maybe.withDefault 0
+
+                r1 =
+                    getRankNumberFromCardRanksArray 0
+
+                r2 =
+                    getRankNumberFromCardRanksArray 1
+
+                r3 =
+                    getRankNumberFromCardRanksArray 2
+
+                r4 =
+                    getRankNumberFromCardRanksArray 3
+
+                r5 =
+                    getRankNumberFromCardRanksArray 4
+            in
+            HighCard r1 r2 r3 r4 r5
