@@ -267,9 +267,27 @@ isStraight hand =
                         |> List.map (\card -> card.rank |> rankToNumber)
                         |> List.sort
                         |> List.reverse
-                        |> Debug.log "result"
             in
-            True
+            cardRanks
+                == [ 6, 5, 4, 3, 2 ]
+                || cardRanks
+                == [ 7, 6, 5, 4, 3 ]
+                || cardRanks
+                == [ 8, 7, 6, 5, 4 ]
+                || cardRanks
+                == [ 9, 8, 7, 6, 5 ]
+                || cardRanks
+                == [ 10, 9, 8, 7, 6 ]
+                || cardRanks
+                == [ 11, 10, 9, 8, 7 ]
+                || cardRanks
+                == [ 12, 11, 10, 9, 8 ]
+                || cardRanks
+                == [ 13, 12, 11, 10, 9 ]
+                || cardRanks
+                == [ 14, 13, 12, 11, 10 ]
+                || cardRanks
+                == [ 14, 5, 4, 3, 2 ]
 
 
 
