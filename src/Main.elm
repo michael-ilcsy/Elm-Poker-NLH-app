@@ -87,8 +87,10 @@ ranks =
     [ Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King ]
 
 
-type Card
-    = Card Suit Rank
+type alias Card =
+    { suit : Suit
+    , rank : Rank
+    }
 
 
 {-| 新品のデッキを作ります
@@ -114,9 +116,7 @@ makeNewShuffledDeck =
 -}
 toImagePath : Card -> String
 toImagePath card =
-    case card of
-        Card suit rank ->
-            "%PUBLIC_URL%/img/" ++ (suit |> suitToString) ++ (rank |> rankToString) ++ ".png"
+    "%PUBLIC_URL%/img/" ++ (card.suit |> suitToString) ++ (card.rank |> rankToString) ++ ".png"
 
 
 suitToString : Suit -> String
@@ -176,6 +176,40 @@ rankToString rank =
 
         Ace ->
             "01"
+
+
+
+---- POKER ----
+
+
+type Hand
+    = Hand Card Card Card Card Card
+
+
+type HandRank
+    = RoyalStraightFlush
+    | StraightFlush Rank
+    | FourOfaKind Rank Rank
+    | FullHouse Rank Rank
+    | Flush Rank Rank Rank Rank Rank
+    | Straight Rank
+    | ThreeOfaKind Rank Rank Rank
+    | TwoPair Rank Rank Rank
+    | OnePair Rank Rank Rank Rank
+    | HighCard Rank Rank Rank Rank Rank
+
+
+{-| フラッシュかどうか調べます
+-}
+isFlush : Hand -> Bool
+isFlush hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                suit =
+                    card1.suit
+            in
+            [ card1, card2, card3, card4, card5 ] |> List.all (\card -> card.suit == suit)
 
 
 
