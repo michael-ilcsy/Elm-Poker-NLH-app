@@ -269,6 +269,8 @@ flush hand =
                 Nothing
 
 
+{-| フラッシュかどうか調べます
+-}
 isFlush : List Card -> Bool
 isFlush cardList =
     case cardList of
@@ -311,25 +313,34 @@ straight hand =
                 Nothing
 
 
+{-| ストレートかどうか調べます
+-}
 isStraight : List Int -> Bool
-isStraight cardRanks =
-    case cardRanks of
-        head :: tail ->
-            Tuple.second <|
-                List.foldl
-                    (\next ( prev, result ) ->
-                        case prev - next of
-                            1 ->
-                                ( next, result )
+isStraight list =
+    if List.length list /= 5 then
+        False
 
-                            _ ->
-                                ( next, False )
-                    )
-                    ( head, True )
-                    tail
+    else
+        case list of
+            first :: rest ->
+                isStraightHelp first rest
+
+            _ ->
+                False
+
+
+isStraightHelp : Int -> List Int -> Bool
+isStraightHelp prev list =
+    case list of
+        next :: rest ->
+            if prev - next == 1 then
+                isStraightHelp next rest
+
+            else
+                False
 
         [] ->
-            False
+            True
 
 
 
