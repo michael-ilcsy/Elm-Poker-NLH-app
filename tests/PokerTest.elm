@@ -9,7 +9,32 @@ all : Test
 all =
     describe "pokerのテスト"
         [ describe "役判定のテスト"
-            [ describe "フラッシュのテスト"
+            [ describe "ロイヤルストレートフラッシュのテスト"
+                [ test "ロイヤルストレートフラッシュのときにTrueが返ること" <|
+                    \_ ->
+                        makeHand ( Spade, Ace ) ( Spade, Jack ) ( Spade, King ) ( Spade, Queen ) ( Spade, Ten )
+                            |> royalStraightFlush
+                            |> Expect.equal (Just RoyalStraightFlush)
+                , test "ロイヤルストレートフラッシュじゃないときにFalseが返ること" <|
+                    \_ ->
+                        makeHand ( Spade, Jack ) ( Spade, Ten ) ( Spade, King ) ( Spade, Queen ) ( Spade, Nine )
+                            |> royalStraightFlush
+                            |> Expect.equal Nothing
+                ]
+            , describe
+                "ストレートフラッシュのテスト"
+                [ test "ストレートフラッシュのときにTrueが返ること" <|
+                    \_ ->
+                        makeHand ( Spade, Nine ) ( Spade, Jack ) ( Spade, King ) ( Spade, Queen ) ( Spade, Ten )
+                            |> straightFlush
+                            |> Expect.equal (Just (StraightFlush 13))
+                , test "ストレートフラッシュじゃないときにFalseが返ること" <|
+                    \_ ->
+                        makeHand ( Spade, Jack ) ( Spade, Ten ) ( Spade, King ) ( Spade, Queen ) ( Spade, Two )
+                            |> straightFlush
+                            |> Expect.equal Nothing
+                ]
+            , describe "フラッシュのテスト"
                 [ test "フラッシュのときにTrueが返ること" <|
                     \_ ->
                         makeHand ( Spade, Ace ) ( Spade, Two ) ( Spade, King ) ( Spade, Queen ) ( Spade, Five )

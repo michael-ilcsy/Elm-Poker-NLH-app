@@ -348,6 +348,68 @@ isStraightHelp prev list =
             True
 
 
+{-| ロイヤルストレートフラッシュかどうか調べて、HandRankを返します
+-}
+royalStraightFlush : Hand -> Maybe HandRank
+royalStraightFlush hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardList =
+                    [ card1, card2, card3, card4, card5 ]
+            in
+            if cardList |> isFlush then
+                let
+                    cardRanks =
+                        cardList
+                            |> List.map toRankNumber
+                            |> List.sort
+                            |> List.reverse
+                in
+                if cardRanks == [ 14, 13, 12, 11, 10 ] then
+                    Just RoyalStraightFlush
+
+                else
+                    Nothing
+
+            else
+                Nothing
+
+
+{-| ストレートフラッシュかどうか調べて、HandRankを返します
+ロイヤルストレートフラッシュであったとしてもストレートフラッシュになります
+-}
+straightFlush : Hand -> Maybe HandRank
+straightFlush hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardList =
+                    [ card1, card2, card3, card4, card5 ]
+            in
+            if cardList |> isFlush then
+                let
+                    cardRanks =
+                        cardList
+                            |> List.map toRankNumber
+                            |> List.sort
+                            |> List.reverse
+                in
+                if cardRanks |> isStraight then
+                    case cardRanks of
+                        [ a, b, c, d, e ] ->
+                            Just (StraightFlush a)
+
+                        _ ->
+                            Nothing
+
+                else
+                    Nothing
+
+            else
+                Nothing
+
+
 
 ---- PROGRAM ----
 
