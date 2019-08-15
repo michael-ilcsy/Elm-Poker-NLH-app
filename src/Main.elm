@@ -231,28 +231,48 @@ type Hand
 
 type HandRank
     = RoyalStraightFlush
-    | StraightFlush Rank
-    | FourOfaKind Rank Rank
-    | FullHouse Rank Rank
-    | Flush Rank Rank Rank Rank Rank
-    | Straight Rank
-    | ThreeOfaKind Rank Rank Rank
-    | TwoPair Rank Rank Rank
-    | OnePair Rank Rank Rank Rank
-    | HighCard Rank Rank Rank Rank Rank
+    | StraightFlush Int
+    | FourOfaKind Int Int
+    | FullHouse Int Int
+    | Flush Int Int Int Int Int
+    | Straight Int
+    | ThreeOfaKind Int Int Int
+    | TwoPair Int Int Int
+    | OnePair Int Int Int Int
+    | HighCard Int Int Int Int Int
 
 
 {-| フラッシュかどうか調べます
 -}
-isFlush : Hand -> Bool
-isFlush hand =
+flush : Hand -> Maybe HandRank
+flush hand =
     case hand of
         Hand card1 card2 card3 card4 card5 ->
             let
+                cardList =
+                    [ card1, card2, card3, card4, card5 ]
+
                 suit =
                     card1.suit
+
+                isFlush =
+                    cardList |> List.all (\card -> card.suit == suit)
             in
-            [ card1, card2, card3, card4, card5 ] |> List.all (\card -> card.suit == suit)
+            if isFlush then
+                case
+                    cardList
+                        |> List.map (\card -> card.rank |> rankToNumber)
+                        |> List.sort
+                        |> List.reverse
+                of
+                    [ a, b, c, d, e ] ->
+                        Just (Flush a b c d e)
+
+                    _ ->
+                        Nothing
+
+            else
+                Nothing
 
 
 {-| ストレートかどうか調べます

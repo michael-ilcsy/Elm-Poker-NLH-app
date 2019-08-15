@@ -13,13 +13,13 @@ all =
                 [ test "フラッシュのときにTrueが返ること" <|
                     \_ ->
                         makeHand ( Spade, Ace ) ( Spade, Two ) ( Spade, King ) ( Spade, Queen ) ( Spade, Five )
-                            |> isFlush
-                            |> Expect.true "フラッシュの手札が期待されます"
+                            |> flush
+                            |> Expect.equal (Just (Flush 14 13 12 5 2))
                 , test "フラッシュじゃないときにFalseが返ること" <|
                     \_ ->
                         makeHand ( Spade, Ace ) ( Diamond, Two ) ( Spade, King ) ( Spade, Queen ) ( Spade, Five )
-                            |> isFlush
-                            |> Expect.false "フラッシュじゃない手札が期待されます"
+                            |> flush
+                            |> Expect.equal Nothing
                 ]
             , describe "ストレートのテスト"
                 [ test "ストレートのときにTrueが返ること" <|
