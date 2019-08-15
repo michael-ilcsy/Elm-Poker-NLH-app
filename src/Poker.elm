@@ -92,30 +92,15 @@ straight hand =
 -}
 isStraight : List Int -> Bool
 isStraight list =
-    if List.length list /= 5 then
-        False
-
-    else
-        case list of
-            first :: rest ->
-                isStraightHelp first rest
-
-            _ ->
-                False
-
-
-isStraightHelp : Int -> List Int -> Bool
-isStraightHelp prev list =
     case list of
-        next :: rest ->
-            if prev - next == 1 then
-                isStraightHelp next rest
+        [ a, b, c, d, e ] ->
+            ([ a, b, c, d, e ]
+                |> List.map (\n -> n - e)
+            )
+                == [ 4, 3, 2, 1, 0 ]
 
-            else
-                False
-
-        [] ->
-            True
+        _ ->
+            False
 
 
 {-| ロイヤルストレートフラッシュかどうか調べて、HandRankを返します
