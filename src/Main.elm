@@ -178,7 +178,9 @@ rankToString rank =
             "01"
 
 
-rankToNumber : Rank -> number
+{-| Rankを数値に変換します
+-}
+rankToNumber : Rank -> Int
 rankToNumber rank =
     case rank of
         Two ->
@@ -221,6 +223,13 @@ rankToNumber rank =
             14
 
 
+{-| CardからRankの表す数値に変換します
+-}
+toRankNumber : Card -> Int
+toRankNumber card =
+    card.rank |> rankToNumber
+
+
 
 ---- POKER ----
 
@@ -255,7 +264,7 @@ flush hand =
             if cardList |> isFlush then
                 case
                     cardList
-                        |> List.map (\card -> card.rank |> rankToNumber)
+                        |> List.map toRankNumber
                         |> List.sort
                         |> List.reverse
                 of
@@ -275,11 +284,7 @@ isFlush : List Card -> Bool
 isFlush cardList =
     case cardList of
         [ c1, c2, c3, c4, c5 ] ->
-            let
-                suit =
-                    c1.suit
-            in
-            cardList |> List.all (\card -> card.suit == suit)
+            cardList |> List.all (\card -> card.suit == c1.suit)
 
         _ ->
             False
@@ -294,14 +299,14 @@ straight hand =
             let
                 cardRanks =
                     [ card1, card2, card3, card4, card5 ]
-                        |> List.map (\card -> card.rank |> rankToNumber)
+                        |> List.map toRankNumber
                         |> List.sort
                         |> List.reverse
             in
             if cardRanks == [ 14, 5, 4, 3, 2 ] then
                 Just (Straight 5)
 
-            else if isStraight cardRanks then
+            else if cardRanks |> isStraight then
                 case cardRanks of
                     [ a, b, c, d, e ] ->
                         Just (Straight a)
