@@ -1,8 +1,9 @@
 module PokerTest exposing (all)
 
 import Expect
-import Main exposing (..)
+import Poker exposing (..)
 import Test exposing (..)
+import Trump exposing (..)
 
 
 all : Test
