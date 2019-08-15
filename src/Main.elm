@@ -410,6 +410,62 @@ straightFlush hand =
                 Nothing
 
 
+{-| 4カードかどうか調べて、HandRankを返します
+-}
+fourOfaKind : Hand -> Maybe HandRank
+fourOfaKind hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanks =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map toRankNumber
+                        |> List.sort
+                        |> List.reverse
+            in
+            case cardRanks of
+                [ a, b, c, d, e ] ->
+                    if a == b && b == c && c == d then
+                        Just (FourOfaKind a e)
+
+                    else if b == c && c == d && d == e then
+                        Just (FourOfaKind b a)
+
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing
+
+
+{-| フルハウスかどうか調べて、HandRankを返します
+-}
+fullHouse : Hand -> Maybe HandRank
+fullHouse hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanks =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map toRankNumber
+                        |> List.sort
+                        |> List.reverse
+            in
+            case cardRanks of
+                [ a, b, c, d, e ] ->
+                    if a == b && b == c && d == e then
+                        Just (FullHouse a d)
+
+                    else if a == b && c == d && d == e then
+                        Just (FullHouse c a)
+
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing
+
+
 
 ---- PROGRAM ----
 

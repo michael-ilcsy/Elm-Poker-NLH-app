@@ -10,12 +10,12 @@ all =
     describe "pokerのテスト"
         [ describe "役判定のテスト"
             [ describe "ロイヤルストレートフラッシュのテスト"
-                [ test "ロイヤルストレートフラッシュのときにTrueが返ること" <|
+                [ test "ロイヤルストレートフラッシュのときにRoyalStraightFlushが返ること" <|
                     \_ ->
                         makeHand ( Spade, Ace ) ( Spade, Jack ) ( Spade, King ) ( Spade, Queen ) ( Spade, Ten )
                             |> royalStraightFlush
                             |> Expect.equal (Just RoyalStraightFlush)
-                , test "ロイヤルストレートフラッシュじゃないときにFalseが返ること" <|
+                , test "ロイヤルストレートフラッシュじゃないときにNothingが返ること" <|
                     \_ ->
                         makeHand ( Spade, Jack ) ( Spade, Ten ) ( Spade, King ) ( Spade, Queen ) ( Spade, Nine )
                             |> royalStraightFlush
@@ -23,46 +23,72 @@ all =
                 ]
             , describe
                 "ストレートフラッシュのテスト"
-                [ test "ストレートフラッシュのときにTrueが返ること" <|
+                [ test "ストレートフラッシュのときにStraightFlushが返ること" <|
                     \_ ->
                         makeHand ( Spade, Nine ) ( Spade, Jack ) ( Spade, King ) ( Spade, Queen ) ( Spade, Ten )
                             |> straightFlush
                             |> Expect.equal (Just (StraightFlush 13))
-                , test "ストレートフラッシュじゃないときにFalseが返ること" <|
+                , test "ストレートフラッシュじゃないときにNothingが返ること" <|
                     \_ ->
                         makeHand ( Spade, Jack ) ( Spade, Ten ) ( Spade, King ) ( Spade, Queen ) ( Spade, Two )
                             |> straightFlush
                             |> Expect.equal Nothing
                 ]
+            , describe
+                "4カードのテスト"
+                [ test "4カードのときにFourOfaKindが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Ten Ten Two Ten Ten
+                            |> fourOfaKind
+                            |> Expect.equal (Just (FourOfaKind 10 2))
+                , test "4カードじゃないときにNothingが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two King King Two King
+                            |> fourOfaKind
+                            |> Expect.equal Nothing
+                ]
+            , describe
+                "フルハウスのテスト"
+                [ test "フルハウスのときにFullHouseが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two King King Two King
+                            |> fullHouse
+                            |> Expect.equal (Just (FullHouse 13 2))
+                , test "フルハウスじゃないときにNothingが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two King King Two Ace
+                            |> fullHouse
+                            |> Expect.equal Nothing
+                ]
             , describe "フラッシュのテスト"
-                [ test "フラッシュのときにTrueが返ること" <|
+                [ test "フラッシュのときにFlushが返ること" <|
                     \_ ->
                         makeHand ( Spade, Ace ) ( Spade, Two ) ( Spade, King ) ( Spade, Queen ) ( Spade, Five )
                             |> flush
                             |> Expect.equal (Just (Flush 14 13 12 5 2))
-                , test "フラッシュじゃないときにFalseが返ること" <|
+                , test "フラッシュじゃないときにNothingが返ること" <|
                     \_ ->
                         makeHand ( Spade, Ace ) ( Diamond, Two ) ( Spade, King ) ( Spade, Queen ) ( Spade, Five )
                             |> flush
                             |> Expect.equal Nothing
                 ]
             , describe "ストレートのテスト"
-                [ test "ストレートのときにTrueが返ること" <|
+                [ test "ストレートのときにStraightが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Three Four Six Seven Five
                             |> straight
                             |> Expect.equal (Just (Straight 7))
-                , test "T,J,Q,K,AのストレートのときにTrueが返ること" <|
+                , test "T,J,Q,K,AのストレートのときにStraightが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Ace Queen Jack King Ten
                             |> straight
                             |> Expect.equal (Just (Straight 14))
-                , test "A,2,3,4,5のストレートのときにTrueが返ること" <|
+                , test "A,2,3,4,5のストレートのときにStraightが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Three Five Ace Four Two
                             |> straight
                             |> Expect.equal (Just (Straight 5))
-                , test "ストレートじゃないときにFalseが返ること" <|
+                , test "ストレートじゃないときにNothingが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Ten Nine Eight Five Seven
                             |> straight
