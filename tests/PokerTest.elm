@@ -25,23 +25,23 @@ all =
                 [ test "ストレートのときにTrueが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Three Four Six Seven Five
-                            |> isStraight
-                            |> Expect.true "ストレートの手札が期待されます"
+                            |> straight
+                            |> Expect.equal (Just (Straight 7))
                 , test "T,J,Q,K,AのストレートのときにTrueが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Ace Queen Jack King Ten
-                            |> isStraight
-                            |> Expect.true "T,J,Q,K,Aのストレートの手札が期待されます"
+                            |> straight
+                            |> Expect.equal (Just (Straight 14))
                 , test "A,2,3,4,5のストレートのときにTrueが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Three Five Ace Four Two
-                            |> isStraight
-                            |> Expect.true "A,2,3,4,5のストレートの手札が期待されます"
+                            |> straight
+                            |> Expect.equal (Just (Straight 5))
                 , test "ストレートじゃないときにFalseが返ること" <|
                     \_ ->
                         makeHandWithoutSuit Ten Nine Eight Five Seven
-                            |> isStraight
-                            |> Expect.false "ストレートじゃない手札が期待されます"
+                            |> straight
+                            |> Expect.equal Nothing
                 ]
             ]
         ]

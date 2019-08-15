@@ -242,7 +242,7 @@ type HandRank
     | HighCard Int Int Int Int Int
 
 
-{-| フラッシュかどうか調べます
+{-| フラッシュかどうか調べて、HandRankを返します
 -}
 flush : Hand -> Maybe HandRank
 flush hand =
@@ -251,14 +251,8 @@ flush hand =
             let
                 cardList =
                     [ card1, card2, card3, card4, card5 ]
-
-                suit =
-                    card1.suit
-
-                isFlush =
-                    cardList |> List.all (\card -> card.suit == suit)
             in
-            if isFlush then
+            if cardList |> isFlush then
                 case
                     cardList
                         |> List.map (\card -> card.rank |> rankToNumber)
@@ -275,10 +269,24 @@ flush hand =
                 Nothing
 
 
-{-| ストレートかどうか調べます
+isFlush : List Card -> Bool
+isFlush cardList =
+    case cardList of
+        [ c1, c2, c3, c4, c5 ] ->
+            let
+                suit =
+                    c1.suit
+            in
+            cardList |> List.all (\card -> card.suit == suit)
+
+        _ ->
+            False
+
+
+{-| ストレートかどうか調べて、HandRankを返します
 -}
-isStraight : Hand -> Bool
-isStraight hand =
+straight : Hand -> Maybe HandRank
+straight hand =
     case hand of
         Hand card1 card2 card3 card4 card5 ->
             let
@@ -289,26 +297,39 @@ isStraight hand =
                         |> List.reverse
             in
             if cardRanks == [ 14, 5, 4, 3, 2 ] then
-                True
+                Just (Straight 5)
+
+            else if isStraight cardRanks then
+                case cardRanks of
+                    [ a, b, c, d, e ] ->
+                        Just (Straight a)
+
+                    _ ->
+                        Nothing
 
             else
-                case cardRanks of
-                    head :: tail ->
-                        Tuple.second <|
-                            List.foldl
-                                (\next ( prev, result ) ->
-                                    case prev - next of
-                                        1 ->
-                                            ( next, result )
+                Nothing
 
-                                        _ ->
-                                            ( next, False )
-                                )
-                                ( head, True )
-                                tail
 
-                    [] ->
-                        False
+isStraight : List Int -> Bool
+isStraight cardRanks =
+    case cardRanks of
+        head :: tail ->
+            Tuple.second <|
+                List.foldl
+                    (\next ( prev, result ) ->
+                        case prev - next of
+                            1 ->
+                                ( next, result )
+
+                            _ ->
+                                ( next, False )
+                    )
+                    ( head, True )
+                    tail
+
+        [] ->
+            False
 
 
 
