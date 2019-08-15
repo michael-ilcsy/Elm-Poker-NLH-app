@@ -178,6 +178,49 @@ rankToString rank =
             "01"
 
 
+rankToNumber : Rank -> number
+rankToNumber rank =
+    case rank of
+        Two ->
+            2
+
+        Three ->
+            3
+
+        Four ->
+            4
+
+        Five ->
+            5
+
+        Six ->
+            6
+
+        Seven ->
+            7
+
+        Eight ->
+            8
+
+        Nine ->
+            9
+
+        Ten ->
+            10
+
+        Jack ->
+            11
+
+        Queen ->
+            12
+
+        King ->
+            13
+
+        Ace ->
+            14
+
+
 
 ---- POKER ----
 
@@ -210,6 +253,23 @@ isFlush hand =
                     card1.suit
             in
             [ card1, card2, card3, card4, card5 ] |> List.all (\card -> card.suit == suit)
+
+
+{-| ストレートかどうか調べます
+-}
+isStraight : Hand -> Bool
+isStraight hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanks =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map (\card -> card.rank |> rankToNumber)
+                        |> List.sort
+                        |> List.reverse
+                        |> Debug.log "result"
+            in
+            True
 
 
 
