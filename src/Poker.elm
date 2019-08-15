@@ -295,3 +295,37 @@ twoPair hand =
 
                 _ ->
                     Nothing
+
+
+{-| 1ペアかどうか調べて、HandRankを返します
+-}
+onePair : Hand -> Maybe HandRank
+onePair hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanks =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map toRankNumber
+                        |> List.sort
+                        |> List.reverse
+            in
+            case cardRanks of
+                [ a, b, c, d, e ] ->
+                    if a == b then
+                        Just (OnePair a c d e)
+
+                    else if b == c then
+                        Just (OnePair b a d e)
+
+                    else if c == d then
+                        Just (OnePair c a b e)
+
+                    else if d == e then
+                        Just (OnePair d a b c)
+
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing

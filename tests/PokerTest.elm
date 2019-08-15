@@ -121,6 +121,19 @@ all =
                             |> twoPair
                             |> Expect.equal Nothing
                 ]
+            , describe
+                "1ペアのテスト"
+                [ test "1ペアのときにOnePairが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Five Ace King Ace Three
+                            |> onePair
+                            |> Expect.equal (Just (OnePair 14 13 5 3))
+                , test "1ペアじゃないときにNothingが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two King Jack Nine Ace
+                            |> onePair
+                            |> Expect.equal Nothing
+                ]
             ]
         ]
 
