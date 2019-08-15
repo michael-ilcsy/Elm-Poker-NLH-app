@@ -288,26 +288,27 @@ isStraight hand =
                         |> List.sort
                         |> List.reverse
             in
-            cardRanks
-                == [ 6, 5, 4, 3, 2 ]
-                || cardRanks
-                == [ 7, 6, 5, 4, 3 ]
-                || cardRanks
-                == [ 8, 7, 6, 5, 4 ]
-                || cardRanks
-                == [ 9, 8, 7, 6, 5 ]
-                || cardRanks
-                == [ 10, 9, 8, 7, 6 ]
-                || cardRanks
-                == [ 11, 10, 9, 8, 7 ]
-                || cardRanks
-                == [ 12, 11, 10, 9, 8 ]
-                || cardRanks
-                == [ 13, 12, 11, 10, 9 ]
-                || cardRanks
-                == [ 14, 13, 12, 11, 10 ]
-                || cardRanks
-                == [ 14, 5, 4, 3, 2 ]
+            if cardRanks == [ 14, 5, 4, 3, 2 ] then
+                True
+
+            else
+                case cardRanks of
+                    head :: tail ->
+                        Tuple.second <|
+                            List.foldl
+                                (\next ( prev, result ) ->
+                                    case prev - next of
+                                        1 ->
+                                            ( next, result )
+
+                                        _ ->
+                                            ( next, False )
+                                )
+                                ( head, True )
+                                tail
+
+                    [] ->
+                        False
 
 
 
