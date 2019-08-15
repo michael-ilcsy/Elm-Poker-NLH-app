@@ -95,6 +95,32 @@ all =
                             |> straight
                             |> Expect.equal Nothing
                 ]
+            , describe
+                "3カードのテスト"
+                [ test "3カードのときにThreeOfaKindが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two Three Three Ace Three
+                            |> threeOfaKind
+                            |> Expect.equal (Just (ThreeOfaKind 3 14 2))
+                , test "3カードじゃないときにNothingが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two King King Two Ace
+                            |> threeOfaKind
+                            |> Expect.equal Nothing
+                ]
+            , describe
+                "2ペアのテスト"
+                [ test "2ペアのときにTwoPairが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Five Five Three Ace Three
+                            |> twoPair
+                            |> Expect.equal (Just (TwoPair 5 3 14))
+                , test "2ペアじゃないときにNothingが返ること" <|
+                    \_ ->
+                        makeHandWithoutSuit Two King King Nine Ace
+                            |> twoPair
+                            |> Expect.equal Nothing
+                ]
             ]
         ]
 

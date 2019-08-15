@@ -233,3 +233,65 @@ fullHouse hand =
 
                 _ ->
                     Nothing
+
+
+{-| 3カードかどうか調べて、HandRankを返します
+-}
+threeOfaKind : Hand -> Maybe HandRank
+threeOfaKind hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanks =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map toRankNumber
+                        |> List.sort
+                        |> List.reverse
+            in
+            case cardRanks of
+                [ a, b, c, d, e ] ->
+                    if a == b && b == c then
+                        Just (ThreeOfaKind a d e)
+
+                    else if b == c && c == d then
+                        Just (ThreeOfaKind b a e)
+
+                    else if c == d && d == e then
+                        Just (ThreeOfaKind c a b)
+
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing
+
+
+{-| 2ペアかどうか調べて、HandRankを返します
+-}
+twoPair : Hand -> Maybe HandRank
+twoPair hand =
+    case hand of
+        Hand card1 card2 card3 card4 card5 ->
+            let
+                cardRanks =
+                    [ card1, card2, card3, card4, card5 ]
+                        |> List.map toRankNumber
+                        |> List.sort
+                        |> List.reverse
+            in
+            case cardRanks of
+                [ a, b, c, d, e ] ->
+                    if a == b && c == d then
+                        Just (TwoPair a c e)
+
+                    else if a == b && d == e then
+                        Just (TwoPair a d c)
+
+                    else if b == c && d == e then
+                        Just (TwoPair b d a)
+
+                    else
+                        Nothing
+
+                _ ->
+                    Nothing
