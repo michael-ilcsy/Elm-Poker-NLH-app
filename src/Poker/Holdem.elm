@@ -58,3 +58,8 @@ mapPlayerHand f playerHand =
     case playerHand of
         PlayerHand c1 c2 ->
             [ c1, c2 ] |> List.map f
+
+
+initializeHoldemGame : Deck -> ( Board, PlayerHand, PlayerHand )
+initializeHoldemGame deck =
+    deck |> deal

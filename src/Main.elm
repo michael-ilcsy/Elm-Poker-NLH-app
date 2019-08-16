@@ -35,16 +35,16 @@ init =
 
 type Msg
     = InitDeck Deck
+    | InitializeGame ( Board, PlayerHand, PlayerHand )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         InitDeck deck ->
-            let
-                ( board, playerHand1, playerHand2 ) =
-                    deck |> Holdem.deal
-            in
+            model |> update (InitializeGame (initializeHoldemGame deck))
+
+        InitializeGame ( board, playerHand1, playerHand2 ) ->
             ( { model
                 | board = board
                 , player1 = playerHand1
