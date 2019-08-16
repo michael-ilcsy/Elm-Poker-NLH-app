@@ -1,4 +1,4 @@
-module Models.Deck exposing (..)
+module Models.Deck exposing (Deck, emptyDeck, makeNewShuffledDeck, map)
 
 import Models.Card as Card exposing (..)
 import Models.Rank as Rank exposing (..)
@@ -15,20 +15,48 @@ ranks =
     [ Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King ]
 
 
+type Deck
+    = Deck (List Card)
+
+
+{-| ダミーの空Deck
+-}
+emptyDeck : Deck
+emptyDeck =
+    Deck []
+
+
 {-| 新品のデッキを作ります
 -}
-makeNewDeck : List Card
+makeNewDeck : Deck
 makeNewDeck =
-    suits |> List.concatMap (\suit -> ranks |> List.map (Card suit))
+    Deck (suits |> List.concatMap (\suit -> ranks |> List.map (Card suit)))
 
 
-shuffleDeck : List Card -> Generator (List Card)
+shuffleDeck : Deck -> Generator Deck
 shuffleDeck deck =
-    Random.List.shuffle deck
+    deck
+        |> toList
+        |> Random.List.shuffle
+        |> Random.map Deck
 
 
 {-| シャッフルされた新品のデッキを作ります
 -}
-makeNewShuffledDeck : (List Card -> msg) -> Cmd msg
+makeNewShuffledDeck : (Deck -> msg) -> Cmd msg
 makeNewShuffledDeck msg =
     Random.generate msg <| shuffleDeck makeNewDeck
+
+
+toList : Deck -> List Card
+toList deck =
+    case deck of
+        Deck cardList ->
+            cardList
+
+
+map : (Card -> a) -> Deck -> List a
+map f deck =
+    case deck of
+        Deck cardList ->
+            cardList |> List.map f

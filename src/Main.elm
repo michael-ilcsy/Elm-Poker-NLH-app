@@ -4,7 +4,7 @@ import Browser
 import Html exposing (Html, div, img, text)
 import Html.Attributes exposing (src)
 import Models.Card exposing (..)
-import Models.Deck as Deck exposing (makeNewShuffledDeck)
+import Models.Deck as Deck exposing (..)
 
 
 
@@ -12,13 +12,13 @@ import Models.Deck as Deck exposing (makeNewShuffledDeck)
 
 
 type alias Model =
-    { deck : List Card
+    { deck : Deck
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { deck = [] }, makeNewShuffledDeck InitDeck )
+    ( { deck = emptyDeck }, makeNewShuffledDeck InitDeck )
 
 
 
@@ -26,7 +26,7 @@ init =
 
 
 type Msg
-    = InitDeck (List Card)
+    = InitDeck Deck
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -42,7 +42,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] (model.deck |> List.map showCardImage)
+    div [] (model.deck |> Deck.map showCardImage)
 
 
 {-| トランプのカードの画像を表示します
