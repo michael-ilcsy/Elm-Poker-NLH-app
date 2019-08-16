@@ -1,4 +1,4 @@
-module Poker.Hand exposing (..)
+module Poker.Hand exposing (Hand(..), HandRank(..), compareHandRank, judgeHandRank)
 
 import Array
 import Models.Card exposing (Card, toRankNumber)
@@ -19,6 +19,12 @@ type HandRank
     | TwoPair Int Int Int
     | OnePair Int Int Int Int
     | HighCard Int Int Int Int Int
+
+
+type Result
+    = Win
+    | Lose
+    | Chop
 
 
 judgeHandRank : Hand -> HandRank
@@ -127,3 +133,69 @@ judgeHandRank hand =
 
             else
                 HighCard r1 r2 r3 r4 r5
+
+
+{-| HandRank２つを比較して結果を返します
+-}
+compareHandRank : HandRank -> HandRank -> Result
+compareHandRank handRank1 handRank2 =
+    let
+        handRankNumber1 =
+            handRank1 |> handRankToNumber
+
+        handRankNumber2 =
+            handRank2 |> handRankToNumber
+    in
+    if handRankNumber1 > handRankNumber2 then
+        Win
+
+    else if handRankNumber1 < handRankNumber2 then
+        Lose
+
+    else
+        Chop
+
+
+{-| HandRankを役の強さに合わせて数値にします
+-}
+handRankToNumber : HandRank -> Int
+handRankToNumber handRank =
+    let
+        -- RankBase(役ごとに決まる数値のベース)
+        rb =
+            10 ^ 6
+
+        -- KickerBase(キッカーごとに決まる数値のベース)
+        kb =
+            20
+    in
+    case handRank of
+        HighCard r1 r2 r3 r4 r5 ->
+            (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2)) + (r4 * (kb ^ 1)) + r5
+
+        OnePair r1 r2 r3 r4 ->
+            rb + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2)) + (r4 * (kb ^ 1))
+
+        TwoPair r1 r2 r3 ->
+            rb * 2 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2))
+
+        ThreeOfaKind r1 r2 r3 ->
+            rb * 3 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2))
+
+        Straight r1 ->
+            rb * 4 + (r1 * (kb ^ 4))
+
+        Flush r1 r2 r3 r4 r5 ->
+            rb * 5 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2)) + (r4 * (kb ^ 1)) + r5
+
+        FullHouse r1 r2 ->
+            rb * 6 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3))
+
+        FourOfaKind r1 r2 ->
+            rb * 7 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3))
+
+        StraightFlush r1 ->
+            rb * 8 + (r1 * (kb ^ 4))
+
+        RoyalStraightFlush ->
+            rb * 9
