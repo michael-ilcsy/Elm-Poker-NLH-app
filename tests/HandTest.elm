@@ -150,6 +150,68 @@ all =
                             |> Expect.equal (HighCard 14 13 6 5 3)
                 ]
             ]
+        , describe "役数値のテスト"
+            [ test "ロイヤルストレートフラッシュの数値がRoyalStraightFlushに復元されること" <|
+                \_ ->
+                    RoyalStraightFlush
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal RoyalStraightFlush
+            , test "ストレートフラッシュの数値がStraightFlushに復元されること" <|
+                \_ ->
+                    StraightFlush 12
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (StraightFlush 12)
+            , test "4カードの数値がFourOfaKindに復元されること" <|
+                \_ ->
+                    FourOfaKind 3 2
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (FourOfaKind 3 2)
+            , test "フルハウスの数値がFullHouseに復元されること" <|
+                \_ ->
+                    FullHouse 14 13
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (FullHouse 14 13)
+            , test "フラッシュの数値がFlushに復元されること" <|
+                \_ ->
+                    Flush 14 13 12 11 6
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (Flush 14 13 12 11 6)
+            , test "ストレートの数値がStraightに復元されること" <|
+                \_ ->
+                    Straight 8
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (Straight 8)
+            , test "3カードの数値がThreeOfaKindに復元されること" <|
+                \_ ->
+                    ThreeOfaKind 12 10 5
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (ThreeOfaKind 12 10 5)
+            , test "2ペアの数値がTwoPairに復元されること" <|
+                \_ ->
+                    TwoPair 14 9 3
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (TwoPair 14 9 3)
+            , test "1ペアの数値がOnePairに復元されること" <|
+                \_ ->
+                    OnePair 12 8 7 6
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (OnePair 12 8 7 6)
+            , test "ハイカードの数値がHighCardに復元されること" <|
+                \_ ->
+                    HighCard 9 8 7 6 3
+                        |> handRankToNumber
+                        |> numberToHandRank
+                        |> Expect.equal (HighCard 9 8 7 6 3)
+            ]
         ]
 
 

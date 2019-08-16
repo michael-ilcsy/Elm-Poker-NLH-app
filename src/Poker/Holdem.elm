@@ -2,7 +2,7 @@ module Poker.Holdem exposing (..)
 
 import Models.Card exposing (..)
 import Models.Deck exposing (..)
-import Poker.Hand exposing (..)
+import Poker.Hand as Hand exposing (..)
 
 
 type Board
@@ -64,6 +64,23 @@ mapPlayerHand f playerHand =
 initializeHoldemGame : Deck -> ( Board, PlayerHand, PlayerHand )
 initializeHoldemGame deck =
     deck |> deal
+
+
+judgeHandRank : Board -> PlayerHand -> HandRank
+judgeHandRank board playerHand =
+    let
+        handList =
+            generateHandList board playerHand
+
+        handRank =
+            handList
+                |> List.map Hand.judgeHandRank
+                |> List.map handRankToNumber
+                |> List.maximum
+                |> Maybe.withDefault 0
+                |> numberToHandRank
+    in
+    handRank
 
 
 {-| BoardとPlayerHandから21通りのHandのListを生成します

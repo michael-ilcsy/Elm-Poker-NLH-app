@@ -1,4 +1,4 @@
-module Poker.Hand exposing (Hand(..), HandRank(..), compareHandRank, judgeHandRank)
+module Poker.Hand exposing (Hand(..), HandRank(..), handRankToNumber, judgeHandRank, numberToHandRank)
 
 import Array
 import Models.Card exposing (Card, toRankNumber)
@@ -19,12 +19,6 @@ type HandRank
     | TwoPair Int Int Int
     | OnePair Int Int Int Int
     | HighCard Int Int Int Int Int
-
-
-type Result
-    = Win
-    | Lose
-    | Chop
 
 
 judgeHandRank : Hand -> HandRank
@@ -135,67 +129,203 @@ judgeHandRank hand =
                 HighCard r1 r2 r3 r4 r5
 
 
-{-| HandRank２つを比較して結果を返します
+{-| RankBase(役ごとに決まる数値のベース)
 -}
-compareHandRank : HandRank -> HandRank -> Result
-compareHandRank handRank1 handRank2 =
-    let
-        handRankNumber1 =
-            handRank1 |> handRankToNumber
+rb =
+    10 ^ 7
 
-        handRankNumber2 =
-            handRank2 |> handRankToNumber
-    in
-    if handRankNumber1 > handRankNumber2 then
-        Win
 
-    else if handRankNumber1 < handRankNumber2 then
-        Lose
+{-| KickerBase(キッカーごとに決まる数値のベース)
+-}
+kb =
+    20
 
-    else
-        Chop
+
+kb1 =
+    kb ^ 4
+
+
+kb2 =
+    kb ^ 3
+
+
+kb3 =
+    kb ^ 2
+
+
+kb4 =
+    kb
 
 
 {-| HandRankを役の強さに合わせて数値にします
 -}
 handRankToNumber : HandRank -> Int
 handRankToNumber handRank =
-    let
-        -- RankBase(役ごとに決まる数値のベース)
-        rb =
-            10 ^ 6
-
-        -- KickerBase(キッカーごとに決まる数値のベース)
-        kb =
-            20
-    in
     case handRank of
         HighCard r1 r2 r3 r4 r5 ->
-            (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2)) + (r4 * (kb ^ 1)) + r5
+            (r1 * kb1) + (r2 * kb2) + (r3 * kb3) + (r4 * kb4) + r5
 
         OnePair r1 r2 r3 r4 ->
-            rb + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2)) + (r4 * (kb ^ 1))
+            rb + (r1 * kb1) + (r2 * kb2) + (r3 * kb3) + (r4 * kb4)
 
         TwoPair r1 r2 r3 ->
-            rb * 2 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2))
+            rb * 2 + (r1 * kb1) + (r2 * kb2) + (r3 * kb3)
 
         ThreeOfaKind r1 r2 r3 ->
-            rb * 3 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2))
+            rb * 3 + (r1 * kb1) + (r2 * kb2) + (r3 * kb3)
 
         Straight r1 ->
-            rb * 4 + (r1 * (kb ^ 4))
+            rb * 4 + (r1 * kb1)
 
         Flush r1 r2 r3 r4 r5 ->
-            rb * 5 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3)) + (r3 * (kb ^ 2)) + (r4 * (kb ^ 1)) + r5
+            rb * 5 + (r1 * kb1) + (r2 * kb2) + (r3 * kb3) + (r4 * kb4) + r5
 
         FullHouse r1 r2 ->
-            rb * 6 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3))
+            rb * 6 + (r1 * kb1) + (r2 * kb2)
 
         FourOfaKind r1 r2 ->
-            rb * 7 + (r1 * (kb ^ 4)) + (r2 * (kb ^ 3))
+            rb * 7 + (r1 * kb1) + (r2 * kb2)
 
         StraightFlush r1 ->
-            rb * 8 + (r1 * (kb ^ 4))
+            rb * 8 + (r1 * kb1)
 
         RoyalStraightFlush ->
             rb * 9
+
+
+numberToHandRank : Int -> HandRank
+numberToHandRank int =
+    if int // (rb * 9) == 1 then
+        RoyalStraightFlush
+
+    else if int // (rb * 8) == 1 then
+        let
+            r1 =
+                (int - (rb * 8)) // kb1
+        in
+        StraightFlush r1
+
+    else if int // (rb * 7) == 1 then
+        let
+            numberWithoutRb =
+                int - (rb * 7)
+
+            r1 =
+                numberWithoutRb // kb1
+
+            r2 =
+                (numberWithoutRb - r1 * kb1) // kb2
+        in
+        FourOfaKind r1 r2
+
+    else if int // (rb * 6) == 1 then
+        let
+            numberWithoutRb =
+                int - (rb * 6)
+
+            r1 =
+                numberWithoutRb // kb1
+
+            r2 =
+                (numberWithoutRb - r1 * kb1) // kb2
+        in
+        FullHouse r1 r2
+
+    else if int // (rb * 5) == 1 then
+        let
+            numberWithoutRb =
+                int - (rb * 5)
+
+            r1 =
+                numberWithoutRb // kb1
+
+            r2 =
+                (numberWithoutRb - r1 * kb1) // kb2
+
+            r3 =
+                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
+
+            r4 =
+                (numberWithoutRb - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
+
+            r5 =
+                numberWithoutRb - r1 * kb1 - r2 * kb2 - r3 * kb3 - r4 * kb4
+        in
+        Flush r1 r2 r3 r4 r5
+
+    else if int // (rb * 4) == 1 then
+        let
+            r1 =
+                (int - (rb * 4)) // kb1
+        in
+        Straight r1
+
+    else if int // (rb * 3) == 1 then
+        let
+            numberWithoutRb =
+                int - (rb * 3)
+
+            r1 =
+                numberWithoutRb // kb1
+
+            r2 =
+                (numberWithoutRb - r1 * kb1) // kb2
+
+            r3 =
+                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
+        in
+        ThreeOfaKind r1 r2 r3
+
+    else if int // (rb * 2) == 1 then
+        let
+            numberWithoutRb =
+                int - (rb * 2)
+
+            r1 =
+                numberWithoutRb // kb1
+
+            r2 =
+                (numberWithoutRb - r1 * kb1) // kb2
+
+            r3 =
+                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
+        in
+        TwoPair r1 r2 r3
+
+    else if int // (rb * 1) == 1 then
+        let
+            numberWithoutRb =
+                int - (rb * 1)
+
+            r1 =
+                numberWithoutRb // kb1
+
+            r2 =
+                (numberWithoutRb - r1 * kb1) // kb2
+
+            r3 =
+                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
+
+            r4 =
+                (numberWithoutRb - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
+        in
+        OnePair r1 r2 r3 r4
+
+    else
+        let
+            r1 =
+                int // kb1
+
+            r2 =
+                (int - r1 * kb1) // kb2
+
+            r3 =
+                (int - r1 * kb1 - r2 * kb2) // kb3
+
+            r4 =
+                (int - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
+
+            r5 =
+                int - r1 * kb1 - r2 * kb2 - r3 * kb3 - r4 * kb4
+        in
+        HighCard r1 r2 r3 r4 r5
