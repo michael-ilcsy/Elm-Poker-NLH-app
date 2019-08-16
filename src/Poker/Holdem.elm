@@ -2,6 +2,7 @@ module Poker.Holdem exposing (..)
 
 import Models.Card exposing (..)
 import Models.Deck exposing (..)
+import Poker.Hand exposing (..)
 
 
 type Board
@@ -63,3 +64,35 @@ mapPlayerHand f playerHand =
 initializeHoldemGame : Deck -> ( Board, PlayerHand, PlayerHand )
 initializeHoldemGame deck =
     deck |> deal
+
+
+{-| BoardとPlayerHandから21通りのHandのListを生成します
+-}
+generateHandList : Board -> PlayerHand -> List Hand
+generateHandList board playerHand =
+    case board of
+        Board c1 c2 c3 c4 c5 ->
+            case playerHand of
+                PlayerHand c6 c7 ->
+                    [ Hand c1 c2 c3 c4 c5
+                    , Hand c1 c2 c3 c4 c6
+                    , Hand c1 c2 c3 c4 c7
+                    , Hand c1 c2 c3 c5 c6
+                    , Hand c1 c2 c3 c5 c7
+                    , Hand c1 c2 c3 c6 c7
+                    , Hand c1 c2 c4 c5 c6
+                    , Hand c1 c2 c4 c5 c7
+                    , Hand c1 c2 c4 c6 c7
+                    , Hand c1 c2 c5 c6 c7
+                    , Hand c1 c3 c4 c5 c6
+                    , Hand c1 c3 c4 c5 c7
+                    , Hand c1 c3 c4 c6 c7
+                    , Hand c1 c3 c5 c6 c7
+                    , Hand c1 c4 c5 c6 c7
+                    , Hand c2 c3 c4 c5 c6
+                    , Hand c2 c3 c4 c5 c7
+                    , Hand c2 c3 c4 c6 c7
+                    , Hand c2 c3 c5 c6 c7
+                    , Hand c2 c4 c5 c6 c7
+                    , Hand c3 c4 c5 c6 c7
+                    ]
