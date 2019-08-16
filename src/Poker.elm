@@ -53,10 +53,10 @@ judgeHandRank hand =
                 r5 =
                     getRankNumberFromCardRanksArray 4
 
-                isFlush_ =
+                isFlush =
                     cardList |> List.all (\card -> card.suit == card1.suit)
 
-                isStraight_ =
+                isStraight =
                     (cardRanks
                         |> List.map (\n -> n - r5)
                     )
@@ -65,13 +65,13 @@ judgeHandRank hand =
                 isFiveHighStraight =
                     cardRanks == [ 14, 5, 4, 3, 2 ]
             in
-            if isFlush_ && cardRanks == [ 14, 13, 12, 11, 10 ] then
+            if isFlush && cardRanks == [ 14, 13, 12, 11, 10 ] then
                 RoyalStraightFlush
 
-            else if isFlush_ && isStraight_ then
+            else if isFlush && isStraight then
                 StraightFlush r1
 
-            else if isFlush_ && isFiveHighStraight then
+            else if isFlush && isFiveHighStraight then
                 StraightFlush 5
 
             else if r1 == r2 && r2 == r3 && r3 == r4 then
@@ -86,10 +86,10 @@ judgeHandRank hand =
             else if r1 == r2 && r3 == r4 && r4 == r5 then
                 FullHouse r3 r1
 
-            else if isFlush_ then
+            else if isFlush then
                 Flush r1 r2 r3 r4 r5
 
-            else if isStraight_ then
+            else if isStraight then
                 Straight r1
 
             else if isFiveHighStraight then
