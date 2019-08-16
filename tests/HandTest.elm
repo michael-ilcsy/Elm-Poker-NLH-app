@@ -125,63 +125,43 @@ all =
             [ test "ロイヤルストレートフラッシュの数値がRoyalStraightFlushに復元されること" <|
                 \_ ->
                     RoyalStraightFlush
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal RoyalStraightFlush
+                        |> numberToHanRankTest
             , test "ストレートフラッシュの数値がStraightFlushに復元されること" <|
                 \_ ->
                     StraightFlush 12
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (StraightFlush 12)
+                        |> numberToHanRankTest
             , test "4カードの数値がFourOfaKindに復元されること" <|
                 \_ ->
                     FourOfaKind 3 2
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (FourOfaKind 3 2)
+                        |> numberToHanRankTest
             , test "フルハウスの数値がFullHouseに復元されること" <|
                 \_ ->
                     FullHouse 14 13
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (FullHouse 14 13)
+                        |> numberToHanRankTest
             , test "フラッシュの数値がFlushに復元されること" <|
                 \_ ->
                     Flush 14 13 12 11 6
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (Flush 14 13 12 11 6)
+                        |> numberToHanRankTest
             , test "ストレートの数値がStraightに復元されること" <|
                 \_ ->
                     Straight 8
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (Straight 8)
+                        |> numberToHanRankTest
             , test "3カードの数値がThreeOfaKindに復元されること" <|
                 \_ ->
                     ThreeOfaKind 12 10 5
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (ThreeOfaKind 12 10 5)
+                        |> numberToHanRankTest
             , test "2ペアの数値がTwoPairに復元されること" <|
                 \_ ->
                     TwoPair 14 9 3
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (TwoPair 14 9 3)
+                        |> numberToHanRankTest
             , test "1ペアの数値がOnePairに復元されること" <|
                 \_ ->
                     OnePair 12 8 7 6
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (OnePair 12 8 7 6)
+                        |> numberToHanRankTest
             , test "ハイカードの数値がHighCardに復元されること" <|
                 \_ ->
                     HighCard 9 8 7 6 3
-                        |> handRankToNumber
-                        |> numberToHandRank
-                        |> Expect.equal (HighCard 9 8 7 6 3)
+                        |> numberToHanRankTest
             ]
         ]
 
@@ -200,8 +180,20 @@ makeHandWithoutSuit r1 r2 r3 r4 r5 =
     Hand (Card Spade r1) (Card Hart r2) (Card Club r3) (Card Diamond r4) (Card Spade r5)
 
 
+{-| 役判定関数をテストします
+-}
 judgeHandRankTest : HandRank -> Hand -> Expectation
 judgeHandRankTest handRank hand =
     hand
         |> judgeHandRank
+        |> Expect.equal handRank
+
+
+{-| 役数値からHandRankに復元する関数をテストします
+-}
+numberToHanRankTest : HandRank -> Expectation
+numberToHanRankTest handRank =
+    handRank
+        |> handRankToNumber
+        |> numberToHandRank
         |> Expect.equal handRank
