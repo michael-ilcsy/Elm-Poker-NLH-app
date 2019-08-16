@@ -1,4 +1,4 @@
-module TrumpTest exposing (..)
+module CardTest exposing (..)
 
 import Expect
 import Models.Card exposing (Card, toImagePath)

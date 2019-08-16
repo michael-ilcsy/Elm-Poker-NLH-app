@@ -1,4 +1,4 @@
-module PokerTest exposing (all)
+module HandTest exposing (all)
 
 import Expect
 import Models.Card exposing (Card)
