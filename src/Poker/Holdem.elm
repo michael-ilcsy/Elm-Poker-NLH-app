@@ -27,6 +27,12 @@ dummyPlayerHand =
     PlayerHand dummyCard dummyCard
 
 
+type Result
+    = Win
+    | Lose
+    | Chop
+
+
 {-| デッキからカードを配ります
 -}
 deal : Deck -> ( Board, PlayerHand, PlayerHand )
@@ -66,21 +72,37 @@ initializeHoldemGame deck =
     deck |> deal
 
 
-judgeHandRank : Board -> PlayerHand -> HandRank
-judgeHandRank board playerHand =
+judgeHandRank : Board -> PlayerHand -> PlayerHand -> ( Result, String, String )
+judgeHandRank board playerHand1 playerHand2 =
     let
-        handList =
-            generateHandList board playerHand
-
-        handRank =
-            handList
+        handRankNumber1 =
+            generateHandList board playerHand1
                 |> List.map Hand.judgeHandRank
                 |> List.map handRankToNumber
                 |> List.maximum
                 |> Maybe.withDefault 0
-                |> numberToHandRank
+
+        handRankNumber2 =
+            generateHandList board playerHand2
+                |> List.map Hand.judgeHandRank
+                |> List.map handRankToNumber
+                |> List.maximum
+                |> Maybe.withDefault 0
+
+        result =
+            if handRankNumber1 > handRankNumber2 then
+                Win
+
+            else if handRankNumber1 < handRankNumber2 then
+                Lose
+
+            else
+                Chop
     in
-    handRank
+    ( result
+    , handRankNumber1 |> numberToHandRank |> handRankToString
+    , handRankNumber2 |> numberToHandRank |> handRankToString
+    )
 
 
 {-| BoardとPlayerHandから21通りのHandのListを生成します

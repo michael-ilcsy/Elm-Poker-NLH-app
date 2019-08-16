@@ -1,4 +1,4 @@
-module Poker.Hand exposing (Hand(..), HandRank(..), handRankToNumber, judgeHandRank, numberToHandRank)
+module Poker.Hand exposing (Hand(..), HandRank(..), handRankToNumber, handRankToString, judgeHandRank, numberToHandRank)
 
 import Array
 import Models.Card exposing (Card, toRankNumber)
@@ -127,6 +127,69 @@ judgeHandRank hand =
 
             else
                 HighCard r1 r2 r3 r4 r5
+
+
+handRankToString : HandRank -> String
+handRankToString handRank =
+    case handRank of
+        RoyalStraightFlush ->
+            "ロイヤルストレートフラッシュ"
+
+        StraightFlush r1 ->
+            (r1 |> handRankToStringHelp) ++ "ハイ ストレートフラッシュ"
+
+        FourOfaKind r1 r2 ->
+            "4カード (" ++ handRankToStringHelp2 r1 r1 r1 r1 r2 ++ ")"
+
+        FullHouse r1 r2 ->
+            "フルハウス (" ++ handRankToStringHelp2 r1 r1 r1 r2 r2 ++ ")"
+
+        Flush r1 r2 r3 r4 r5 ->
+            "フラッシュ (" ++ handRankToStringHelp2 r1 r2 r3 r4 r5 ++ ")"
+
+        Straight r1 ->
+            (r1 |> handRankToStringHelp) ++ "ハイ ストレート"
+
+        ThreeOfaKind r1 r2 r3 ->
+            "3カード (" ++ handRankToStringHelp2 r1 r1 r1 r2 r3 ++ ")"
+
+        TwoPair r1 r2 r3 ->
+            "2ペア (" ++ handRankToStringHelp2 r1 r1 r2 r2 r3 ++ ")"
+
+        OnePair r1 r2 r3 r4 ->
+            "1ペア (" ++ handRankToStringHelp2 r1 r1 r2 r3 r4 ++ ")"
+
+        HighCard r1 r2 r3 r4 r5 ->
+            "ハイカード (" ++ handRankToStringHelp2 r1 r2 r3 r4 r5 ++ ")"
+
+
+handRankToStringHelp : Int -> String
+handRankToStringHelp int =
+    case int of
+        14 ->
+            "A"
+
+        13 ->
+            "K"
+
+        12 ->
+            "Q"
+
+        11 ->
+            "J"
+
+        10 ->
+            "T"
+
+        _ ->
+            String.fromInt int
+
+
+handRankToStringHelp2 : Int -> Int -> Int -> Int -> Int -> String
+handRankToStringHelp2 r1 r2 r3 r4 r5 =
+    [ r1, r2, r3, r4, r5 ]
+        |> List.map handRankToStringHelp
+        |> String.join ""
 
 
 {-| RankBase(役ごとに決まる数値のベース)
