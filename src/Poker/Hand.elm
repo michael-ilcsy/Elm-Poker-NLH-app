@@ -210,11 +210,8 @@ numberToHandRank int =
             numberWithoutRb =
                 int - (rb * 7)
 
-            r1 =
-                numberWithoutRb // kb1
-
-            r2 =
-                (numberWithoutRb - r1 * kb1) // kb2
+            { r1, r2 } =
+                numberToHandRankHelp numberWithoutRb
         in
         FourOfaKind r1 r2
 
@@ -223,11 +220,8 @@ numberToHandRank int =
             numberWithoutRb =
                 int - (rb * 6)
 
-            r1 =
-                numberWithoutRb // kb1
-
-            r2 =
-                (numberWithoutRb - r1 * kb1) // kb2
+            { r1, r2 } =
+                numberToHandRankHelp numberWithoutRb
         in
         FullHouse r1 r2
 
@@ -236,20 +230,8 @@ numberToHandRank int =
             numberWithoutRb =
                 int - (rb * 5)
 
-            r1 =
-                numberWithoutRb // kb1
-
-            r2 =
-                (numberWithoutRb - r1 * kb1) // kb2
-
-            r3 =
-                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
-
-            r4 =
-                (numberWithoutRb - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
-
-            r5 =
-                numberWithoutRb - r1 * kb1 - r2 * kb2 - r3 * kb3 - r4 * kb4
+            { r1, r2, r3, r4, r5 } =
+                numberToHandRankHelp numberWithoutRb
         in
         Flush r1 r2 r3 r4 r5
 
@@ -265,14 +247,8 @@ numberToHandRank int =
             numberWithoutRb =
                 int - (rb * 3)
 
-            r1 =
-                numberWithoutRb // kb1
-
-            r2 =
-                (numberWithoutRb - r1 * kb1) // kb2
-
-            r3 =
-                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
+            { r1, r2, r3 } =
+                numberToHandRankHelp numberWithoutRb
         in
         ThreeOfaKind r1 r2 r3
 
@@ -281,14 +257,8 @@ numberToHandRank int =
             numberWithoutRb =
                 int - (rb * 2)
 
-            r1 =
-                numberWithoutRb // kb1
-
-            r2 =
-                (numberWithoutRb - r1 * kb1) // kb2
-
-            r3 =
-                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
+            { r1, r2, r3 } =
+                numberToHandRankHelp numberWithoutRb
         in
         TwoPair r1 r2 r3
 
@@ -297,35 +267,35 @@ numberToHandRank int =
             numberWithoutRb =
                 int - (rb * 1)
 
-            r1 =
-                numberWithoutRb // kb1
-
-            r2 =
-                (numberWithoutRb - r1 * kb1) // kb2
-
-            r3 =
-                (numberWithoutRb - r1 * kb1 - r2 * kb2) // kb3
-
-            r4 =
-                (numberWithoutRb - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
+            { r1, r2, r3, r4 } =
+                numberToHandRankHelp numberWithoutRb
         in
         OnePair r1 r2 r3 r4
 
     else
         let
-            r1 =
-                int // kb1
-
-            r2 =
-                (int - r1 * kb1) // kb2
-
-            r3 =
-                (int - r1 * kb1 - r2 * kb2) // kb3
-
-            r4 =
-                (int - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
-
-            r5 =
-                int - r1 * kb1 - r2 * kb2 - r3 * kb3 - r4 * kb4
+            { r1, r2, r3, r4, r5 } =
+                numberToHandRankHelp int
         in
         HighCard r1 r2 r3 r4 r5
+
+
+numberToHandRankHelp : Int -> { r1 : Int, r2 : Int, r3 : Int, r4 : Int, r5 : Int }
+numberToHandRankHelp int =
+    let
+        r1 =
+            int // kb1
+
+        r2 =
+            (int - r1 * kb1) // kb2
+
+        r3 =
+            (int - r1 * kb1 - r2 * kb2) // kb3
+
+        r4 =
+            (int - r1 * kb1 - r2 * kb2 - r3 * kb3) // kb4
+
+        r5 =
+            int - r1 * kb1 - r2 * kb2 - r3 * kb3 - r4 * kb4
+    in
+    { r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5 }
