@@ -4,7 +4,7 @@ import Expect
 import Models.Card exposing (Card)
 import Models.Rank exposing (Rank(..))
 import Models.Suit exposing (Suit(..))
-import Poker exposing (..)
+import Poker.Hand exposing (..)
 import Test exposing (..)
 
 
