@@ -1,13 +1,20 @@
 module Models.Card exposing (..)
 
-import Models.Rank as Rank exposing (Rank, toNumber)
-import Models.Suit as Suit exposing (Suit)
+import Models.Rank as Rank exposing (Rank(..), toNumber)
+import Models.Suit as Suit exposing (Suit(..))
 
 
 type alias Card =
     { suit : Suit
     , rank : Rank
     }
+
+
+{-| ダミーのCard
+-}
+dummyCard : Card
+dummyCard =
+    Card Spade Ace
 
 
 {-| CardからRankの表す数値に変換します

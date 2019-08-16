@@ -5,6 +5,7 @@ import Html exposing (Html, div, img, text)
 import Html.Attributes exposing (src)
 import Models.Card exposing (..)
 import Models.Deck as Deck exposing (..)
+import Poker exposing (..)
 
 
 
@@ -13,12 +14,21 @@ import Models.Deck as Deck exposing (..)
 
 type alias Model =
     { deck : Deck
+    , board : Board
+    , player1 : PlayerHand
+    , player2 : PlayerHand
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { deck = emptyDeck }, makeNewShuffledDeck InitDeck )
+    ( { deck = dummyDeck
+      , board = dummyBoard
+      , player1 = dummyPlayerHand
+      , player2 = dummyPlayerHand
+      }
+    , makeNewShuffledDeck InitDeck
+    )
 
 
 
@@ -42,7 +52,11 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] (model.deck |> Deck.map showCardImage)
+    div []
+        [ div [] (model.deck |> Deck.map showCardImage)
+        , div [] (model.deck |> Deck.map showCardImage)
+        , div [] (model.deck |> Deck.map showCardImage)
+        ]
 
 
 {-| トランプのカードの画像を表示します

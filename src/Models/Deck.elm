@@ -1,8 +1,9 @@
-module Models.Deck exposing (Deck, emptyDeck, makeNewShuffledDeck, map)
+module Models.Deck exposing (Deck, dummyDeck, makeNewShuffledDeck, map)
 
 import Models.Card as Card exposing (..)
 import Models.Rank as Rank exposing (..)
 import Models.Suit as Suit exposing (..)
+import Poker exposing (..)
 import Random exposing (Generator)
 import Random.List
 
@@ -21,8 +22,8 @@ type Deck
 
 {-| ダミーの空Deck
 -}
-emptyDeck : Deck
-emptyDeck =
+dummyDeck : Deck
+dummyDeck =
     Deck []
 
 
@@ -46,6 +47,26 @@ shuffleDeck deck =
 makeNewShuffledDeck : (Deck -> msg) -> Cmd msg
 makeNewShuffledDeck msg =
     Random.generate msg <| shuffleDeck makeNewDeck
+
+
+{-| デッキからカードを配ります
+-}
+deal : Deck -> ( Board, PlayerHand, PlayerHand )
+deal deck =
+    case deck of
+        Deck cardList ->
+            case cardList of
+                c1 :: c2 :: c3 :: c4 :: c5 :: c6 :: c7 :: c8 :: c9 :: rest ->
+                    ( Board c1 c2 c3 c4 c5
+                    , PlayerHand c6 c7
+                    , PlayerHand c8 c9
+                    )
+
+                _ ->
+                    ( dummyBoard
+                    , dummyPlayerHand
+                    , dummyPlayerHand
+                    )
 
 
 toList : Deck -> List Card

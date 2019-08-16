@@ -1,7 +1,7 @@
 module Poker exposing (..)
 
 import Array
-import Models.Card exposing (Card, toRankNumber)
+import Models.Card exposing (Card, dummyCard, toRankNumber)
 
 
 type Hand
@@ -19,6 +19,28 @@ type HandRank
     | TwoPair Int Int Int
     | OnePair Int Int Int Int
     | HighCard Int Int Int Int Int
+
+
+type Board
+    = Board Card Card Card Card Card
+
+
+{-| ダミーのBoard
+-}
+dummyBoard : Board
+dummyBoard =
+    Board dummyCard dummyCard dummyCard dummyCard dummyCard
+
+
+type PlayerHand
+    = PlayerHand Card Card
+
+
+{-| ダミーのPlayerHand
+-}
+dummyPlayerHand : PlayerHand
+dummyPlayerHand =
+    PlayerHand dummyCard dummyCard
 
 
 judgeHandRank : Hand -> HandRank
