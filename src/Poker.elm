@@ -1,7 +1,7 @@
 module Poker exposing (..)
 
 import Array
-import Trump exposing (..)
+import Models.Card exposing (Card, toRankNumber)
 
 
 type Hand

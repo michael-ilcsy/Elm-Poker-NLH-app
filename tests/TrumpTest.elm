@@ -1,8 +1,10 @@
 module TrumpTest exposing (..)
 
 import Expect
+import Models.Card exposing (Card, toImagePath)
+import Models.Rank exposing (Rank(..))
+import Models.Suit exposing (Suit(..))
 import Test exposing (..)
-import Trump exposing (..)
 
 
 all : Test

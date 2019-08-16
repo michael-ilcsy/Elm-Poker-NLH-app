@@ -1,9 +1,11 @@
 module PokerTest exposing (all)
 
 import Expect
+import Models.Card exposing (Card)
+import Models.Rank exposing (Rank(..))
+import Models.Suit exposing (Suit(..))
 import Poker exposing (..)
 import Test exposing (..)
-import Trump exposing (..)
 
 
 all : Test

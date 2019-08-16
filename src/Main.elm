@@ -1,9 +1,10 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, h1, img, text)
+import Html exposing (Html, div, img, text)
 import Html.Attributes exposing (src)
-import Trump exposing (..)
+import Models.Card exposing (..)
+import Models.Deck as Deck exposing (makeNewShuffledDeck)
 
 
 
