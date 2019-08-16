@@ -38,3 +38,30 @@ img {
 .chop {
     display: inline-block;
 }
+
+.winner {
+    font-weight: bold;
+    color: red;
+}
+
+.arrow {
+    margin: auto;
+    width: 0px;
+    border-color: #d9534f;
+    border-style: solid;
+    border-width: 30px;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+
+.result {
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.result-button {
+    display: block;
+    margin: 20px auto 0;
+}

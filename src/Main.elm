@@ -21,6 +21,8 @@ type alias Model =
     , player2HandRankString : String
     , gameStatus : GameStatus
     , gameResult : Holdem.Result
+    , playerChoice : PlayerChoice
+    , answer : Answer
     }
 
 
@@ -28,6 +30,19 @@ type GameStatus
     = BeforeInitialize
     | Waiting
     | Result
+
+
+type PlayerChoice
+    = One
+    | Two
+    | Draw
+    | NoSelect
+
+
+type Answer
+    = Correct
+    | Wrong
+    | NoAnswer
 
 
 init : ( Model, Cmd Msg )
@@ -39,6 +54,8 @@ init =
       , player2HandRankString = ""
       , gameStatus = BeforeInitialize
       , gameResult = Chop
+      , playerChoice = NoSelect
+      , answer = NoAnswer
       }
     , makeNewShuffledDeck InitDeck
     )
@@ -51,7 +68,8 @@ init =
 type Msg
     = InitDeck Deck
     | InitializeGame ( Board, PlayerHand, PlayerHand )
-    | SelectPlayer
+    | SelectPlayer PlayerChoice
+    | RestartGame
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -70,19 +88,45 @@ update msg model =
             , Cmd.none
             )
 
-        SelectPlayer ->
+        SelectPlayer select ->
             let
                 ( result, p1string, p2string ) =
                     Holdem.judgeHandRank model.board model.player1 model.player2
+
+                answer =
+                    if select == One then
+                        if result == Win then
+                            Correct
+
+                        else
+                            Wrong
+
+                    else if select == Two then
+                        if result == Lose then
+                            Correct
+
+                        else
+                            Wrong
+
+                    else if result == Chop then
+                        Correct
+
+                    else
+                        Wrong
             in
             ( { model
                 | player1HandRankString = p1string
                 , player2HandRankString = p2string
                 , gameStatus = Result
                 , gameResult = result
+                , playerChoice = select
+                , answer = answer
               }
             , Cmd.none
             )
+
+        RestartGame ->
+            ( model, makeNewShuffledDeck InitDeck )
 
 
 
@@ -99,17 +143,76 @@ view model =
                 [ div [ class "player-hand" ]
                     (List.append
                         (model.player1 |> Holdem.mapPlayerHand showCardImage)
-                        [ playerButton (onClick SelectPlayer) ]
-                        |> resultView model.gameStatus model.player1HandRankString
+                        (if model.gameStatus == Result then
+                            []
+
+                         else
+                            [ playerButton (onClick (SelectPlayer One)) ]
+                        )
+                        |> resultView model model.player1HandRankString Win
                     )
-                , div [ class "chop" ] [ chopButton ]
+                , if model.gameStatus == Result then
+                    div
+                        [ class "chop"
+                        , if model.gameResult == Chop then
+                            class "winner"
+
+                          else
+                            class ""
+                        ]
+                        [ if model.gameResult == Chop then
+                            text "引き分け"
+
+                          else
+                            text ""
+                        , if model.playerChoice == Draw then
+                            div [ class "arrow" ] []
+
+                          else
+                            div [] []
+                        ]
+
+                  else
+                    div [ class "chop" ] [ chopButton (onClick (SelectPlayer Draw)) ]
                 , div [ class "player-hand" ]
                     (List.append
                         (model.player2 |> Holdem.mapPlayerHand showCardImage)
-                        [ playerButton (onClick SelectPlayer) ]
-                        |> resultView model.gameStatus model.player2HandRankString
+                        (if model.gameStatus == Result then
+                            []
+
+                         else
+                            [ playerButton (onClick (SelectPlayer Two)) ]
+                        )
+                        |> resultView model model.player2HandRankString Lose
                     )
                 ]
+            , if model.gameStatus == Result then
+                if model.answer == Correct then
+                    div [ class "has-text-link", class "result" ]
+                        [ text "正解！"
+                        , button
+                            [ class "button"
+                            , class "is-info"
+                            , class "result-button"
+                            , onClick RestartGame
+                            ]
+                            [ text "もう一度" ]
+                        ]
+
+                else
+                    div [ class "has-text-danger", class "result" ]
+                        [ text "不正解！"
+                        , button
+                            [ class "button"
+                            , class "is-info"
+                            , class "result-button"
+                            , onClick RestartGame
+                            ]
+                            [ text "もう一度" ]
+                        ]
+
+              else
+                div [] []
             ]
 
     else
@@ -134,21 +237,47 @@ playerButton attr =
         [ text "勝ち" ]
 
 
-chopButton : Html msg
-chopButton =
+chopButton : Attribute msg -> Html msg
+chopButton attr =
     button
         [ class "button"
         , class "is-primary"
+        , attr
         ]
         [ text "引き分け" ]
 
 
-resultView : GameStatus -> String -> List (Html msg) -> List (Html msg)
-resultView gameStatus handRankString viewList =
+resultView : Model -> String -> Holdem.Result -> List (Html msg) -> List (Html msg)
+resultView model handRankString result viewList =
     List.append
         viewList
-        (if gameStatus == Result then
-            [ div [] [ text handRankString ] ]
+        (if model.gameStatus == Result then
+            [ div
+                [ if model.gameResult == result then
+                    class "winner"
+
+                  else
+                    class ""
+                ]
+                [ text handRankString
+                , if model.playerChoice == One then
+                    if result == Win then
+                        div [ class "arrow" ] []
+
+                    else
+                        div [] []
+
+                  else if model.playerChoice == Two then
+                    if result == Lose then
+                        div [ class "arrow" ] []
+
+                    else
+                        div [] []
+
+                  else
+                    div [] []
+                ]
+            ]
 
          else
             [ div [] [] ]
