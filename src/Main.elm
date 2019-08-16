@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, img, text)
-import Html.Attributes exposing (src)
+import Html exposing (Html, button, div, h1, img, text)
+import Html.Attributes exposing (class, src)
 import Models.Card exposing (..)
 import Models.Deck as Deck exposing (..)
 import Poker.Holdem as Holdem exposing (..)
@@ -62,8 +62,20 @@ view : Model -> Html Msg
 view model =
     div []
         [ div [] (model.board |> Holdem.mapBoard showCardImage)
-        , div [] (model.player1 |> Holdem.mapPlayerHand showCardImage)
-        , div [] (model.player2 |> Holdem.mapPlayerHand showCardImage)
+        , h1 [] [ text "どっちの勝ち？" ]
+        , div []
+            [ div [ class "player-hand" ]
+                (List.append
+                    (model.player1 |> Holdem.mapPlayerHand showCardImage)
+                    [ playerButton ]
+                )
+            , div [ class "chop" ] [ chopButton ]
+            , div [ class "player-hand" ]
+                (List.append
+                    (model.player2 |> Holdem.mapPlayerHand showCardImage)
+                    [ playerButton ]
+                )
+            ]
         ]
 
 
@@ -72,6 +84,25 @@ view model =
 showCardImage : Card -> Html msg
 showCardImage card =
     img [ src (card |> toImagePath) ] []
+
+
+playerButton : Html msg
+playerButton =
+    button
+        [ class "button"
+        , class "is-link"
+        , class "player-button"
+        ]
+        [ text "勝ち" ]
+
+
+chopButton : Html msg
+chopButton =
+    button
+        [ class "button"
+        , class "is-primary"
+        ]
+        [ text "引き分け" ]
 
 
 
